@@ -1,34 +1,34 @@
+#!/usr/bin/env rspec
 require 'spec_helper'
 
 describe 'stunnel' do
-  context 'for operating system family RedHat' do
+  describe "for operating system family RedHat" do
+    it { should_not contain_service("stunnel") }
+    it { should contain_package("stunnel") }
+
     let(:params) {{}}
     let(:facts) {{
-      :osfamily => 'RedHat',
+      :osfamily => 'redhat'
     }}
-
-    it { is_expected.to_not contain_service('stunnel') }
-    it { is_expected.to contain_package('stunnel') }
   end
 
-  context 'for operating system family Debian' do
+  describe "for operating system family Debian" do
+    it { should contain_service("stunnel4") }
+    it { should contain_package("stunnel4") }
+
+    it { should_not contain_package("stunnel") }
+    it { should_not contain_package("stunnel") }
     let(:params) {{}}
     let(:facts) {{
-      :osfamily => 'Debian',
+      :osfamily => 'debian',
     }}
-
-    it { is_expected.to contain_service('stunnel4') }
-    it { is_expected.to contain_package('stunnel4') }
-
-    it { is_expected.to_not contain_package('stunnel') }
-    it { is_expected.to_not contain_package('stunnel') }
   end
 
-  context 'stunnel::tun' do
-    it { is_expected.to contain_class('stunnel::params') }
+  describe "stunnel::tun" do
+    it { should include_class("stunnel::params") }
   end
 
-  context 'stunnel::init' do
-    it { is_expected.to contain_class('stunnel::params') }
+  describe "stunnel::init" do
+    it { should include_class("stunnel::params") }
   end
 end

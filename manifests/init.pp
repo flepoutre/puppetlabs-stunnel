@@ -32,15 +32,12 @@
 #
 # Copyright 2012 Puppet Labs, LLC
 #
-class stunnel(
-  $package  = $stunnel::params::package,
-  $service  = $stunnel::params::service,
-  $conf_dir = $stunnel::params::conf_dir
+class stunnel (
+  String $package  = $stunnel::params::package,
+  String $service  = $stunnel::params::service,
+  String $conf_dir = $stunnel::params::conf_dir,
 ) inherits stunnel::params {
-
-  package { $package:
-    ensure => present,
-  }
+  package { $package: ensure => present, }
 
   file { $conf_dir:
     ensure  => directory,
@@ -49,10 +46,10 @@ class stunnel(
     recurse => true,
   }
 
-  if $::osfamily == 'Debian' {
+  if $facts['os']['family'] == 'Debian' {
     exec { 'enable stunnel':
       command => 'sed -i "s/ENABLED=0/ENABLED=1/" /etc/default/stunnel4',
-      path    => [ '/bin', '/usr/bin' ],
+      path    => ['/bin', '/usr/bin'],
       unless  => 'grep "ENABLED=1" /etc/default/stunnel4',
       require => Package[$package],
       before  => Service[$service],
